@@ -12,23 +12,57 @@ class App extends Component {
     this.state = {
       technicians: techniciansMockData,
       formVisible: false,
+      initialFormState: null,
+      isEditing: false,
     };
 
     this.showForm = this.showForm.bind(this);
-    this.handleCreateItem = this.handleCreateItem.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDeleteItem = this.handleDeleteItem.bind(this);
   }
 
-  showForm() {
-    this.setState({
-      formVisible: true,
-    });
+  showForm(id) {
+    if (id) {
+      const result = this.state.technicians.filter((technician) => technician.id === id);
+      this.setState({
+        formVisible: true,
+        initialFormState: result.length !== 0 ? result[0] : null,
+        isEditing: true,
+      });
+    } else {
+      this.setState({
+        formVisible: true,
+        initialFormState: null,
+        isEditing: false,
+      });
+    }
   }
 
-  handleCreateItem(technician) {
-    this.setState({
-      technicians: [...this.state.technicians, technician],
-    });
+  handleSubmit(technician) {
+    if (this.state.isEditing) {
+      this.setState({
+        technicians: this.state.technicians.map((element) => {
+          if (element.id === technician.id) {
+            element.id = technician.id;
+            element.firstName = technician.firstName;
+            element.lastName = technician.lastName;
+            element.email = technician.email;
+            element.boilersTypes = technician.boilersTypes;
+            element.professionalLevel = technician.professionalLevel;
+            element.hourRate = technician.hourRate;
+            element.monthlyCapacity = technician.monthlyCapacity;
+          }
+          return element;
+        }),
+        isEditing: false,
+        formVisible: false,
+      });
+    } else {
+      this.setState({
+        technicians: [...this.state.technicians, technician],
+        formVisible: false,
+      });
+    }
   }
 
   handleDeleteItem(id) {
@@ -41,9 +75,9 @@ class App extends Component {
     return (
       <div className="App">
         <Title>Technicians</Title>
-        <List items={this.state.technicians} onDeleteItem={this.handleDeleteItem} />
+        <List items={this.state.technicians} onDeleteItem={this.handleDeleteItem} onUpdateItem={this.showForm} />
         <AddButton showForm={this.showForm} />
-        {this.state.formVisible && <AddItem onSubmit={this.handleCreateItem} />}
+        {this.state.formVisible && <AddItem onSubmit={this.handleSubmit} initialState={this.state.initialFormState} />}
       </div>
     );
   }

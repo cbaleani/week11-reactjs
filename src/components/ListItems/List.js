@@ -12,7 +12,7 @@ class List extends Component {
               <th>Last Name</th>
               <th>Email</th>
               <th>Boilers types</th>
-              <th>Proffesional level</th>
+              <th>Professional level</th>
               <th>Hour rate</th>
               <th>Monthly capacity</th>
               <th>Actions</th>
@@ -20,7 +20,7 @@ class List extends Component {
           </thead>
           <tbody>
             {this.props.items.map((item) => (
-              <Item key={item.id} value={item} onDelete={this.props.onDeleteItem} />
+              <Item key={item.id} value={item} onDelete={this.props.onDeleteItem} onUpdate={this.props.onUpdateItem} />
             ))}
           </tbody>
         </table>
